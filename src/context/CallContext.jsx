@@ -10,7 +10,7 @@ export const CallProvider = ({ children }) => {
     };
 
     return (
-        <CallContext.Provider value={{ calledPatient, callPatient}}>
+        <CallContext.Provider value={{ calledPatient, callPatient }}>
             {children}
         </CallContext.Provider>
     );
