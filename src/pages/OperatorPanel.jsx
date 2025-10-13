@@ -37,7 +37,16 @@ export default function OperatorPanel() {
   };
 
   const ocultarMensaje = () => {
-    setTimeout(() => setMensaje(null), 3000);
+    setTimeout(() => setMensaje(null), 3000); // se ocultan los mensajes despues de 3 segundos
+  };
+
+  const llamarPaciente = (nombre, apellido) => {
+    const mensaje = `Paciente ${nombre} ${apellido} ,favor pasar a preconsulta. ` ;
+    const voz = new SpeechSynthesisUtterance(mensaje);
+    voz.lang = "es-ES"; 
+    voz.rate = 0.55;
+    voz.pitch = 1 
+    speechSynthesis.speak(voz);
   };
 
   return (
@@ -92,7 +101,14 @@ export default function OperatorPanel() {
         {pacientes.map((p) => (
           <li key={p.id} style={{ margin: "8px 0" }}>
             {p.cinro} - {p.nombre} {p.apellido}{" "}
-            <button onClick={() => callPatient(p)}>Llamar</button>
+            <button
+              onClick={() => {
+                callPatient(p);
+                llamarPaciente(p.nombre, p.apellido);
+              }}
+            >
+              Llamar
+            </button>
           </li>
         ))}
       </ul>
