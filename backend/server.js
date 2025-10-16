@@ -50,6 +50,36 @@ app.post("/pacientes", async (req, res) => {
   res.json({ id: result.lastID, cinro, nombre, apellido });
 });
 
+//Guardar el ultimo paciente llamado
+app.post("/llamar", async (req, res) => {
+  const db = await dbPromise;
+  const { id } = req.body; 
+
+  // se crea la tabla
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS llamado_actual (
+    id_llamado INTEGER
+    );
+  `);
+  
+// Limpiamos el registro anterior y guardamos el nuevo
+await db.run("DELETE FROM llamado_actual");
+await db.run("INSERT INTO llamado_actual (id_llamado) VALUES (?)", [id]);
+
+res.json({ success: true});
+});
+
+// Obtener el ultimo paciente llamado
+app.get("/llamado", async (req, res) => {
+  const db = await dbPromise;
+  const row = await db.get(`
+    SELECT p.*
+    FROM pacientes p
+    JOIN llamado_actual l ON l.id_llamado = p.id
+    `);
+    res.json(row || null);
+})
+
 app.listen(4000, () =>
   console.log("✅ Servidor backend corriendo en http://localhost:4000")
 );

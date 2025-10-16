@@ -6,7 +6,7 @@ export default function OperatorPanel() {
   const { callPatient } = useContext(CallContext);
   const [pacientes, setPacientes] = useState([]);
   const [form, setForm] = useState({ cinro: "", nombre: "", apellido: "" });
-  const [mensaje, setMensaje] = useState(null);
+  const [mensaje, setMensaje] = useState(null); // 🟢 Estado para mensajes
 
   useEffect(() => {
     cargarPacientes();
@@ -15,6 +15,10 @@ export default function OperatorPanel() {
   const cargarPacientes = async () => {
     const data = await getPacientes();
     setPacientes(data);
+  };
+
+  const ocultarMensaje = () => {
+    setTimeout(() => setMensaje(null), 3000); // se ocultan los mensajes despues de 3 segundos
   };
 
   const agregarPaciente = async () => {
@@ -26,6 +30,8 @@ export default function OperatorPanel() {
 
     try {
       const nuevo = await addPaciente(form);
+      // Opcional: Si el paciente ya no debe estar en la lista después de llamarlo,
+      // actualiza el estado aquí para que no aparezca en la lista
       setPacientes([nuevo, ...pacientes]);
       setForm({ cinro: "", nombre: "", apellido: "" });
       setMensaje({ tipo: "exito", texto: "✅ Paciente agregado correctamente" });
@@ -36,24 +42,51 @@ export default function OperatorPanel() {
     }
   };
 
-  const ocultarMensaje = () => {
-    setTimeout(() => setMensaje(null), 3000); // se ocultan los mensajes despues de 3 segundos
-  };
+  // 1. Lógica de llamado unificada para ser reutilizada y evitar duplicación.
+  const llamarPaciente = async (paciente) => {
+    try {
+      // 2. Llama a la API (o Socket.IO)
+      await fetch("http://localhost:4000/llamar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: paciente.id }),
+      });
 
-  const llamarPaciente = (nombre, apellido) => {
-    const mensaje = `Paciente ${nombre} ${apellido} ,favor pasar a preconsulta. ` ;
-    const voz = new SpeechSynthesisUtterance(mensaje);
-    voz.lang = "es-ES"; 
-    voz.rate = 0.55;
-    voz.pitch = 1 
-    speechSynthesis.speak(voz);
+      // 3. (Opcional) Llama al contexto si necesitas actualizar un estado global
+      // callPatient(paciente); 
+
+      // 4. Muestra el mensaje de éxito y lo borra (reemplazo del alert)
+      setMensaje({
+        tipo: "exito",
+        texto: `📢 Llamando a ${paciente.nombre} ${paciente.apellido}`,
+      });
+      ocultarMensaje();
+      
+      // 5. Lógica de síntesis de voz (opcional: la tenías en una función separada)
+      const mensajeVoz = `Paciente ${paciente.nombre} ${paciente.apellido}, favor pasar a preconsulta.`;
+      const voz = new SpeechSynthesisUtterance(mensajeVoz);
+      voz.lang = "es-ES";
+      voz.rate = 0.55;
+      voz.pitch = 1;
+      speechSynthesis.speak(voz);
+      
+      // 6. Opcional: Quitar al paciente de la lista
+      // setPacientes(pacientes.filter(p => p.id !== paciente.id));
+
+    } catch (error) {
+      setMensaje({
+        tipo: "error",
+        texto: `❌ Error al llamar a ${paciente.nombre} ${paciente.apellido}`,
+      });
+      ocultarMensaje();
+    }
   };
 
   return (
     <div style={{ padding: "2rem" }}>
       <h2>🩺 Panel del Operador</h2>
 
-      {/* Mensaje visual */}
+      {/* Mensaje visual (se usa para éxito/error y para el llamado) */}
       {mensaje && (
         <div
           style={{
@@ -72,6 +105,7 @@ export default function OperatorPanel() {
 
       {/* Formulario */}
       <div style={{ marginBottom: "1rem" }}>
+        {/* ... (inputs del formulario) ... */}
         <input
           placeholder="CI"
           value={form.cinro}
@@ -102,10 +136,7 @@ export default function OperatorPanel() {
           <li key={p.id} style={{ margin: "8px 0" }}>
             {p.cinro} - {p.nombre} {p.apellido}{" "}
             <button
-              onClick={() => {
-                callPatient(p);
-                llamarPaciente(p.nombre, p.apellido);
-              }}
+              onClick={() => llamarPaciente(p)} // 🎯 Usa la nueva función unificada
             >
               Llamar
             </button>
@@ -115,4 +146,3 @@ export default function OperatorPanel() {
     </div>
   );
 }
-

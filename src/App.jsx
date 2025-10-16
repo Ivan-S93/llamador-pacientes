@@ -1,3 +1,4 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useState } from "react";
 import OperatorPanel from "./pages/OperatorPanel";
 import WaitingRoom from "./pages/WaitingRoom";
@@ -7,15 +8,22 @@ function App() {
   const [view, setView] = useState("operator");
 
   return (
-    <CallProvider>
-      <div style={{ textAlign: "center", margin: "1rem"}}>
-        <button onClick={() => setView("operador")}>Panel Operador</button>
-        <button onClick={() => setView("waiting")}>Sala de Espera</button>
-      </div>
+        <CallProvider>
+      <Router>
+        <div style={{ textAlign: "center", margin: "1rem" }}>
+          <a href="/" style={{ marginRight: "1rem" }}>Panel Operador</a>
+          <a href="/sala-espera" target="_blank" rel="noopener noreferrer">
+            Sala de Espera
+          </a>
+        </div>
 
-      {view === "operador" ? <OperatorPanel /> : <WaitingRoom />}
+        <Routes>
+          <Route path="/" element={<OperatorPanel />} />
+          <Route path="/sala-espera" element={<WaitingRoom />} />
+        </Routes>
+      </Router>
     </CallProvider>
-  )
+  );
 }
 
-export default App
+export default App;
