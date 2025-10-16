@@ -163,7 +163,7 @@ export default function OperatorPanel() {
                 fontWeight: "bold",
               }}
             >
-              {pacienteLlamado === p.id ? "✅ Llamado" : "Llamar"}
+              {pacienteLlamado === p.id ? "✅ Atendido" : "Llamar"}
             </button>
           </li>
         ))}
