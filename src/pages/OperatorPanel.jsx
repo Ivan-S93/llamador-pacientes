@@ -2,11 +2,33 @@ import { useState, useEffect, useContext } from "react";
 import { CallContext } from "../context/CallContext";
 import { getPacientes, addPaciente } from "../services/api";
 
+// Estilos base para los inputs más grandes y uniformes
+const inputStyle = {
+  padding: '10px 15px', // Aumentar el padding para hacerlos más altos
+  marginRight: '10px', // Espacio entre los inputs
+  border: '1px solid #ccc',
+  borderRadius: '5px',
+  fontSize: '16px', // Opcional: aumentar un poco el tamaño de la fuente
+  width: '180px', // Fijar un ancho para que sean uniformes
+};
+
+// Estilos para el botón de Agregar (para que coincida con el tamaño)
+const buttonStyle = {
+  padding: '10px 15px',
+  border: 'none',
+  borderRadius: '5px',
+  backgroundColor: '#4CAF50',
+  color: 'white',
+  cursor: 'pointer',
+  fontSize: '16px',
+  fontWeight: 'bold',
+};
+
 export default function OperatorPanel() {
   const { callPatient } = useContext(CallContext);
   const [pacientes, setPacientes] = useState([]);
   const [form, setForm] = useState({ cinro: "", nombre: "", apellido: "" });
-  const [mensaje, setMensaje] = useState(null); // 🟢 Estado para mensajes
+  const [mensaje, setMensaje] = useState(null);
 
   useEffect(() => {
     cargarPacientes();
@@ -18,7 +40,7 @@ export default function OperatorPanel() {
   };
 
   const ocultarMensaje = () => {
-    setTimeout(() => setMensaje(null), 3000); // se ocultan los mensajes despues de 3 segundos
+    setTimeout(() => setMensaje(null), 3000);
   };
 
   const agregarPaciente = async () => {
@@ -30,8 +52,6 @@ export default function OperatorPanel() {
 
     try {
       const nuevo = await addPaciente(form);
-      // Opcional: Si el paciente ya no debe estar en la lista después de llamarlo,
-      // actualiza el estado aquí para que no aparezca en la lista
       setPacientes([nuevo, ...pacientes]);
       setForm({ cinro: "", nombre: "", apellido: "" });
       setMensaje({ tipo: "exito", texto: "✅ Paciente agregado correctamente" });
@@ -42,27 +62,20 @@ export default function OperatorPanel() {
     }
   };
 
-  // 1. Lógica de llamado unificada para ser reutilizada y evitar duplicación.
   const llamarPaciente = async (paciente) => {
     try {
-      // 2. Llama a la API (o Socket.IO)
       await fetch("http://localhost:4000/llamar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: paciente.id }),
       });
 
-      // 3. (Opcional) Llama al contexto si necesitas actualizar un estado global
-      // callPatient(paciente); 
-
-      // 4. Muestra el mensaje de éxito y lo borra (reemplazo del alert)
       setMensaje({
         tipo: "exito",
         texto: `📢 Llamando a ${paciente.nombre} ${paciente.apellido}`,
       });
       ocultarMensaje();
       
-      // 5. Lógica de síntesis de voz (opcional: la tenías en una función separada)
       const mensajeVoz = `Paciente ${paciente.nombre} ${paciente.apellido}, favor pasar a preconsulta.`;
       const voz = new SpeechSynthesisUtterance(mensajeVoz);
       voz.lang = "es-ES";
@@ -70,9 +83,6 @@ export default function OperatorPanel() {
       voz.pitch = 1;
       speechSynthesis.speak(voz);
       
-      // 6. Opcional: Quitar al paciente de la lista
-      // setPacientes(pacientes.filter(p => p.id !== paciente.id));
-
     } catch (error) {
       setMensaje({
         tipo: "error",
@@ -86,7 +96,7 @@ export default function OperatorPanel() {
     <div style={{ padding: "2rem" }}>
       <h2>🩺 Panel del Operador</h2>
 
-      {/* Mensaje visual (se usa para éxito/error y para el llamado) */}
+      {/* Mensaje visual */}
       {mensaje && (
         <div
           style={{
@@ -103,25 +113,29 @@ export default function OperatorPanel() {
         </div>
       )}
 
-      {/* Formulario */}
+      {/* Formulario CON INPUTS MÁS GRANDES */}
       <div style={{ marginBottom: "1rem" }}>
-        {/* ... (inputs del formulario) ... */}
         <input
           placeholder="CI"
           value={form.cinro}
           onChange={(e) => setForm({ ...form, cinro: e.target.value })}
+          style={inputStyle} // 👈 Aplicando el estilo aquí
         />
         <input
           placeholder="Nombre"
           value={form.nombre}
           onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+          style={inputStyle} // 👈 Aplicando el estilo aquí
         />
         <input
           placeholder="Apellido"
           value={form.apellido}
           onChange={(e) => setForm({ ...form, apellido: e.target.value })}
+          style={inputStyle} // 👈 Aplicando el estilo aquí
         />
-        <button onClick={agregarPaciente}>Agregar</button>
+        <button onClick={agregarPaciente} style={buttonStyle}>
+          Agregar
+        </button>
       </div>
 
       {/* Contador de pacientes */}
@@ -136,7 +150,16 @@ export default function OperatorPanel() {
           <li key={p.id} style={{ margin: "8px 0" }}>
             {p.cinro} - {p.nombre} {p.apellido}{" "}
             <button
-              onClick={() => llamarPaciente(p)} // 🎯 Usa la nueva función unificada
+              onClick={() => llamarPaciente(p)}
+              style={{
+                // Estilo para el botón Llamar (lo puedes ajustar también)
+                padding: '8px 15px',
+                backgroundColor: '#ff3300ff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer'
+              }}
             >
               Llamar
             </button>
