@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { CallContext } from "../context/CallContext";
-import { getPacientes, addPaciente } from "../services/api";
+import { addPaciente } from "../services/api";
 
 const inputStyle = {
   padding: "10px 15px",
@@ -20,27 +20,35 @@ const buttonStyle = {
   cursor: "pointer",
   fontSize: "16px",
   fontWeight: "bold",
+  transition: "background-color 0.3s",
 };
 
 export default function OperatorPanel() {
   const { callPatient } = useContext(CallContext);
   const [pacientes, setPacientes] = useState([]);
+  const [atendidos, setAtendidos] = useState([]);
   const [form, setForm] = useState({ cinro: "", nombre: "", apellido: "" });
   const [mensaje, setMensaje] = useState(null);
-  const [pacienteLlamado, setPacienteLlamado] = useState(null); // 👈 nuevo estado para paciente llamado
+  const [pacienteLlamado, setPacienteLlamado] = useState(null);
 
   useEffect(() => {
     cargarPacientes();
+    cargarAtendidos();
   }, []);
 
   const cargarPacientes = async () => {
-    const data = await getPacientes();
+    const res = await fetch("http://localhost:4000/pacientes");
+    const data = await res.json();
     setPacientes(data);
   };
 
-  const ocultarMensaje = () => {
-    setTimeout(() => setMensaje(null), 3000);
+  const cargarAtendidos = async () => {
+    const res = await fetch("http://localhost:4000/atendidos");
+    const data = await res.json();
+    setAtendidos(data);
   };
+
+  const ocultarMensaje = () => setTimeout(() => setMensaje(null), 3000);
 
   const agregarPaciente = async () => {
     if (!form.cinro || !form.nombre || !form.apellido) {
@@ -63,13 +71,15 @@ export default function OperatorPanel() {
 
   const llamarPaciente = async (paciente) => {
     try {
+      // 🔹 Llamar paciente en backend
       await fetch("http://localhost:4000/llamar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: paciente.id }),
       });
 
-      setPacienteLlamado(paciente.id); // 🔹 marcamos el ID del paciente llamado
+      // 🔹 Guardar referencia local para cambiar color del botón
+      setPacienteLlamado(paciente.id);
 
       setMensaje({
         tipo: "exito",
@@ -77,12 +87,16 @@ export default function OperatorPanel() {
       });
       ocultarMensaje();
 
+      // 🔊 Voz
       const mensajeVoz = `Paciente ${paciente.nombre} ${paciente.apellido}, favor pasar a preconsulta.`;
       const voz = new SpeechSynthesisUtterance(mensajeVoz);
       voz.lang = "es-ES";
       voz.rate = 0.55;
       voz.pitch = 1;
       speechSynthesis.speak(voz);
+
+      // 🔄 Recargar lista de atendidos
+      await cargarAtendidos();
     } catch (error) {
       setMensaje({
         tipo: "error",
@@ -107,13 +121,13 @@ export default function OperatorPanel() {
                 ? "rgba(0, 255, 100, 0.15)"
                 : "rgba(255, 80, 80, 0.15)",
             color: mensaje.tipo === "exito" ? "#4CAF50" : "#f44336",
-            transition: "opacity 0.3s ease",
           }}
         >
           {mensaje.texto}
         </div>
       )}
 
+      {/* 🧾 Formulario */}
       <div style={{ marginBottom: "1rem" }}>
         <input
           placeholder="CI"
@@ -138,36 +152,60 @@ export default function OperatorPanel() {
         </button>
       </div>
 
-      <h3 style={{ marginBottom: "1rem", color: "#ccc" }}>
-        🕒 Pacientes en sala de espera:{" "}
-        <span style={{ color: "#4CAF50", fontWeight: "bold" }}>
-          {pacientes.length}
-        </span>
-      </h3>
+      {/* 🧱 Contenedor principal lado a lado */}
+      <div style={{ display: "flex", gap: "2rem" }}>
+        {/* 🕒 Columna izquierda - Sala de espera */}
+        <div style={{ flex: 1 }}>
+          <h3>
+            🕒 En sala de espera:{" "}
+            <span style={{ color: "#4CAF50", fontWeight: "bold" }}>
+              {pacientes.length}
+            </span>
+          </h3>
+          <ul>
+            {pacientes.map((p) => (
+              <li key={p.id} style={{ margin: "8px 0" }}>
+                {p.cinro} - {p.nombre} {p.apellido}{" "}
+                <button
+                  onClick={() => llamarPaciente(p)}
+                  style={{
+                    padding: "8px 15px",
+                    backgroundColor:
+                      pacienteLlamado === p.id ? "#2196f3" : "#ff3300",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    transition: "background-color 0.3s",
+                  }}
+                >
+                  {pacienteLlamado === p.id ? "Atendido" : "Llamar"}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-      <ul>
-        {pacientes.map((p) => (
-          <li key={p.id} style={{ margin: "8px 0" }}>
-            {p.cinro} - {p.nombre} {p.apellido}{" "}
-            <button
-              onClick={() => llamarPaciente(p)}
-              disabled={pacienteLlamado === p.id} // 🔸 desactiva si ya fue llamado
-              style={{
-                padding: "8px 15px",
-                backgroundColor:
-                  pacienteLlamado === p.id ? "#4CAF50" : "#ff3300",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: pacienteLlamado === p.id ? "default" : "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              {pacienteLlamado === p.id ? "✅ Atendido" : "Llamar"}
-            </button>
-          </li>
-        ))}
-      </ul>
+        {/* ✅ Columna derecha - Atendidos */}
+        <div style={{ flex: 1 }}>
+          <h3>
+            ✅ Pacientes atendidos hoy:{" "}
+            <span style={{ color: "#2196f3", fontWeight: "bold" }}>
+              {atendidos.length}
+            </span>
+          </h3>
+          <ul>
+            {atendidos.map((a) => (
+              <li key={a.id} style={{ margin: "8px 0" }}>
+                {a.cinro} - {a.nombre} {a.apellido} <br />
+                <small style={{ color: "#888" }}>
+                  ⏰ {new Date(a.fecha_llamado).toLocaleString("es-ES")}
+                </small>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
