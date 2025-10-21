@@ -33,7 +33,7 @@ export default function WaitingRoom() {
         <>
           <p>Paciente llamado:</p>
           <h2 style={{ fontSize: "3rem", color: "#00ffcc" }}>
-            {paciente.nombre} {paciente.apellido}
+            { paciente.nombre } { paciente.apellido }
           </h2>
           <h3>CI: {paciente.cinro}</h3>
         </>
