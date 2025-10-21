@@ -21,7 +21,40 @@
 
 - ✅ Node.js ≥ 18.x  
 - ✅ Git  
+## 🛠️ Instalación de Node.js y Git
 
+Antes de poder ejecutar el proyecto, necesitas tener instalados **Node.js** y **Git** en tu computadora.
+
+---
+
+### 1️⃣ Instalar Node.js
+
+**Node.js** es necesario para ejecutar el backend y compilar el frontend.
+
+#### Windows / macOS
+
+1. Visita la página oficial: [https://nodejs.org/](https://nodejs.org/)  
+2. Descarga la versión **LTS** (recomendada)  
+3. Ejecuta el instalador y sigue los pasos predeterminados  
+4. Verifica la instalación abriendo la terminal y ejecutando:
+
+```bash
+node -v
+npm -v
+
+2️⃣ Instalar Git
+
+Git es necesario para clonar el repositorio del proyecto.
+
+Windows / macOS
+
+Visita https://git-scm.com/downloads
+
+Descarga el instalador y sigue los pasos predeterminados
+
+Verifica la instalación:
+
+    git --version
 ---
 
 # ⚡ Pasos Detallados para Despliegue
