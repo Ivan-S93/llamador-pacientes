@@ -1,16 +1,152 @@
-# React + Vite
+# 🏥 Proyecto Llamador de Pacientes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Sistema de gestión de flujo de pacientes para salas de espera y boxes de atención.  
+> Controla el ciclo de atención, con histórico y llamado por voz automática.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Arquitectura y Tecnologías
 
-## React Compiler
+| Componente | Descripción | Tecnologías Clave |
+| :--- | :--- | :--- |
+| **Frontend** | Interfaz del operador, sala de espera y panel de historial | React (Vite), React Router DOM, Web Speech API |
+| **Backend** | API REST para gestión de pacientes y estado de llamado | Node.js, Express, SQLite (`sqlite`), CORS |
+| **Base de Datos** | Almacenamiento local de pacientes en espera, atendidos y llamado actual | SQLite (`pacientes.db`) |
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+---
 
-## Expanding the ESLint configuration
+## 📋 Pre-requisitos
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+> ⚠️ **Importante:** Instala antes de comenzar
+
+- ✅ Node.js ≥ 18.x  
+- ✅ Git  
+
+---
+
+# ⚡ Pasos Detallados para Despliegue
+
+> Sigue los pasos **en orden** para evitar errores.  
+
+---
+
+### 🟣 Paso 1 – Clonar Repositorio e Instalar Dependencias
+
+```bash
+# Clonar repositorio
+git clone https://github.com/Ivan-S93/llamador-pacientes.git
+cd <nombre-del-directorio-del-proyecto>
+
+# Instalar dependencias
+npm install
+💡 Tip: Si hay errores, verifica la versión de Node.js y npm.
+
+🟢 Verificación:
+
+Todas las dependencias instaladas correctamente ✅
+
+Listo para iniciar backend y frontend
+
+🟠 Paso 2 – Iniciar el Backend (API)
+bash
+Copiar código
+# Ejecutar backend
+node server.js
+⚠️ Nota: El backend debe ejecutarse antes del frontend.
+
+🟢 Verificación:
+
+URL backend: 👉 http://localhost:4000
+
+Se crea automáticamente pacientes.db si no existía ✅
+
+🔵 Paso 3 – Iniciar el Frontend (React/Vite)
+bash
+Copiar código
+npm run dev
+🟢 Verificación:
+
+URL frontend: 👉 http://localhost:5173
+
+Abrir en navegador para acceder a la interfaz
+
+💡 Tip: Puedes abrir /sala-espera en una pantalla grande o TV para mostrar pacientes llamados.
+
+🗺️ Rutas Principales
+URL	Propósito	Acción
+/	Panel del Operador	Agregar, llamar y finalizar pacientes
+/historial	Historial de Atendidos	Consultar pacientes atendidos
+/sala-espera	Sala de Espera (Pantalla Pública)	Mostrar pacientes llamados en tiempo real
+
+🔄 Flujo de Atención
+Estado	Descripción	Acción del Operador
+🟡 EN ESPERA	Paciente visible en lista	Agregar mediante formulario o listado
+🔵 LLAMADO	Paciente actualmente llamado	Clic en "Llamar" → Se anuncia con voz y pasa a flotante
+🟢 ATENDIDO	Paciente que finalizó atención	Clic en "Marcar como ATENDIDO" → Se mueve a pacientes_atendidos
+
+🧠 Estructura de Tablas SQLite
+🩺 Tabla pacientes
+sql
+Copiar código
+CREATE TABLE IF NOT EXISTS pacientes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  cinro INTEGER,
+  nombre TEXT NOT NULL,
+  apellido TEXT NOT NULL
+);
+📞 Tabla llamado_actual (Temporal)
+sql
+Copiar código
+CREATE TEMP TABLE IF NOT EXISTS llamado_actual (
+  id_llamado INTEGER
+);
+🗂️ Tabla pacientes_atendidos
+sql
+Copiar código
+CREATE TABLE IF NOT EXISTS pacientes_atendidos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  paciente_id INTEGER,
+  cinro INTEGER,
+  nombre TEXT,
+  apellido TEXT,
+  fecha_llamado TEXT,
+  estado TEXT DEFAULT 'LLAMADO'
+);
+💡 Tip: La tabla llamado_actual se limpia automáticamente al llamar a un nuevo paciente.
+
+🗣️ Funcionalidades Clave
+✅ Llamado por voz automática (Web Speech API)
+
+✅ Sincronización en tiempo real entre operador y sala de espera
+
+✅ Historial persistente de pacientes atendidos
+
+✅ Base de datos local (SQLite)
+
+✅ API REST simple y extensible
+
+🧩 Endpoints Backend
+Método	Ruta	Descripción
+GET	/pacientes	Lista pacientes en espera
+POST	/pacientes	Agregar paciente
+POST	/llamar	Marcar paciente como llamado y actualizar llamado_actual
+GET	/llamado	Obtener paciente actualmente llamado
+GET	/atendidos	Listar todos los pacientes atendidos
+
+🧱 Estructura del Proyecto
+text
+Copiar código
+📦 proyecto-llamador-pacientes
+├── 📁 src
+│   ├── 📁 components
+│   ├── 📁 pages
+│   └── App.jsx
+├── server.js
+├── package.json
+├── pacientes.db
+└── README.md
+💬 Créditos
+👨‍💻 Desarrollador: Iván Samudio – Especialista en Oracle APEX, React y desarrollo de soluciones empresariales
+📅 Versión: 1.0
+📍 Base de datos: SQLite
+🖥️ Entorno: Node.js + React (Vite)
