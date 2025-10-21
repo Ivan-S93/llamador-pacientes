@@ -68,7 +68,8 @@ Verifica la instalación:
 ```bash
 # Clonar repositorio
 git clone https://github.com/Ivan-S93/llamador-pacientes.git
-cd <nombre-del-directorio-del-proyecto>
+
+en el Siguiente directorio cd C:\Users\user\llamador-pacientes
 
 # Instalar dependencias
 npm install

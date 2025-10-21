@@ -28,7 +28,7 @@ export default function WaitingRoom() {
         fontSize: "2rem",
       }}
     >
-      <h1>🩺 Sala de Espera</h1>
+      <h1>🩺 Sala de Espera a Pre-Consulta </h1>
       {paciente ? (
         <>
           <p>Paciente llamado:</p>
