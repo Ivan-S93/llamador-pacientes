@@ -1,80 +1,58 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom"; // 👈 Importar Link
-import { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import OperatorPanel from "./pages/OperatorPanel";
 import WaitingRoom from "./pages/WaitingRoom";
-import { CallProvider } from "./context/CallContext";
 import AtendidosPanel from "./pages/AtendidosPanel";
+import { CallProvider } from "./context/CallContext";
+import logo from "./assets/logoTic.webp";
+import "./App.css";
 
 function App() {
-  // El estado 'view' ya no es necesario si usas React Router para la navegación
-  // const [view, setView] = useState("operator"); 
-
+  
   return (
+    
     <CallProvider>
       <Router>
-        {/* Barra de Navegación centralizada */}
-        <nav style={{ 
-          padding: '1rem', 
-          background: '#003366', // Un color más corporativo
-          color: 'white',
-          display: 'flex',
-          justifyContent: 'center', // Centrar los enlaces
-          gap: '30px' 
-        }}>
-          {/* 1. Enlace al Panel del Operador (Ruta /) */}
-          <Link 
-            to="/" 
-            style={{ 
-              color: 'white', 
-              textDecoration: 'none', 
-              fontWeight: 'bold',
-              fontSize: '1.1rem'
-            }}
-          >
-            🩺 Panel Operador
-          </Link>
-          
-          {/* 2. Enlace al Historial de Atendidos (Nueva Ruta) */}
-          <Link 
-            to="/historial" 
-            style={{ 
-              color: 'white', 
-              textDecoration: 'none', 
-              fontWeight: 'bold',
-              fontSize: '1.1rem'
-            }}
-          >
-            📚 Historial de Atendidos
-          </Link>
-          
-          {/* 3. Enlace a la Sala de Espera (mantenemos el <a> para abrir en nueva pestaña) */}
-          <a 
-            href="/sala-espera" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            style={{ 
-              color: '#ffc107', // Color que destaque
-              textDecoration: 'none', 
-              fontWeight: 'bold',
-              fontSize: '1.1rem'
-            }}
-          >
-            📺 Sala de Espera
-          </a>
-        </nav>
+        {/*======= ENCABEZADO========*/}
+        <header className="app-header">
+          <div className="header-content">
+            {/*logo tic */}
+            <div className="header-left">
+              <img src={logo} alt="Logo TIC" className="logo-hospital"/>
+            </div>
 
-        <div style={{ padding: "1rem" }}>
+              {/* Navegacion centrada */ }
+            <nav className="header-nav">
+              <Link to="/" className="nav-link">
+                🩺 Panel Operador
+              </Link> 
+              <Link to="/historial" className="nav-link">
+                📚 Historial de Atendidos
+              </Link> 
+              <a 
+                href="/sala-espera"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-link special" 
+              >
+                📺 Sala de Espera
+              </a>
+            </nav>  
+          </div>
+        </header>
+
+        {/* ============ CONTENIDO PRINCIPAL ============= */}
+        <main className="main-content">
           <Routes>
-            {/* Ruta principal: Panel del Operador */}
-            <Route path="/" element={<OperatorPanel />} />
-            
-            {/* Nueva Ruta: Panel de Historial Atendido */}
-            <Route path="/historial" element={<AtendidosPanel />} /> 
-            
-            {/* Ruta de Sala de Espera */}
+            <Route path="/" element={<OperatorPanel /> } />
+            <Route path="/historial" element={<AtendidosPanel />} />
             <Route path="/sala-espera" element={<WaitingRoom />} />
           </Routes>
-        </div>
+        </main>
+
+        {/* ============ PIE DE PAGINA ===================*/}
+        <footer className="app-footer">
+          <p> © 2025 Sistema de Llamador de Pacientes — Área TIC </p>
+        </footer>
       </Router>
     </CallProvider>
   );

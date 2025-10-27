@@ -1,68 +1,95 @@
+/* === ESTILOS BASE GENERALES === */
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Paleta hospitalaria suave */
+  --color-principal: #005b9f; /* Azul hospital */
+  --color-secundario: #e3f2fd; /* Azul claro */
+  --color-texto: #1a1a1a;
+  --color-fondo: #f9fafc;
+  --color-nav: #003366;
+  --color-footer: #e0e0e0;
 
-  font-synthesis: none;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* === CUERPO === */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--color-fondo);
+  display: flex;
+  flex-direction: column;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* === ENLACES === */
+a {
+  font-weight: 500;
+  color: var(--color-principal);
+  text-decoration: none;
+}
+a:hover {
+  color: #0288d1;
 }
 
+/* === BOTONES === */
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: none;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--color-principal);
+  color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  background-color: #0277bd;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* === CABECERA === */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background-color: var(--color-nav);
+  color: white;
+  padding: 0.8rem;
+}
+
+.logo-hospital {
+  height: 50px;
+  width: auto;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.2));
+}
+
+/* === CONTENIDO PRINCIPAL === */
+main {
+  flex: 1;
+  padding: 2rem;
+  background-color: var(--color-fondo);
+}
+
+/* === PIE DE PÁGINA === */
+footer {
+  background-color: var(--color-footer);
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+footer span {
+  color: var(--color-principal);
+  font-weight: bold;
 }
