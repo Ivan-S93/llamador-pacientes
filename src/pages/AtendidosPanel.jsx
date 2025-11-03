@@ -99,11 +99,7 @@ export default function AtendidosPanel() {
           style={controlStyle}
         />
         
-        {/* El botón ya no es necesario ya que el useEffect recarga al cambiar las fechas */}
-        {/* <button onClick={cargarHistorial} style={buttonStyle}>
-          {cargando ? 'Cargando...' : 'Buscar'}
-        </button> */}
-          
+                  
         {mensaje && (
             <span style={{ color: mensaje.startsWith('❌') || mensaje.startsWith('⚠️') ? 'red' : 'green', marginLeft: '20px' }}>
                 {mensaje}

@@ -3,7 +3,8 @@ import OperatorPanel from "./pages/OperatorPanel";
 import WaitingRoom from "./pages/WaitingRoom";
 import AtendidosPanel from "./pages/AtendidosPanel";
 import { CallProvider } from "./context/CallContext";
-import logo from "./assets/logoTic.webp";
+import logo from "./assets/LOGO_TIC.jpeg";
+import logohgco from "./assets/logo_HGCO.jpeg" ;
 import "./App.css";
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
           <div className="header-content">
             {/*logo tic */}
             <div className="header-left">
-              <img src={logo} alt="Logo TIC" className="logo-hospital"/>
+              <img src={logo} alt="Logo TIC" className="logo-tic"/>
             </div>
 
               {/* Navegacion centrada */ }
@@ -36,7 +37,12 @@ function App() {
               >
                 📺 Sala de Espera
               </a>
-            </nav>  
+            </nav>
+
+            { /* Logo HGCO */}
+            <div className="header-right">
+              <img src={logohgco} alt="HGCO" className="logo-hgco"/>
+            </div>  
           </div>
         </header>
 
@@ -51,7 +57,7 @@ function App() {
 
         {/* ============ PIE DE PAGINA ===================*/}
         <footer className="app-footer">
-          <p> © 2025 Sistema de Llamador de Pacientes — Área TIC </p>
+          <p> © 2025 HOSPITAL GENERAL CORONEL OVIEDO — Área TIC </p>
         </footer>
       </Router>
     </CallProvider>
