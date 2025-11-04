@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import logo from "../assets/LOGO_TIC.jpeg";
+import logohgco from "../assets/logo_HGCO.jpeg";
 
 export default function WaitingRoom() {
   const [paciente, setPaciente] = useState(null);
@@ -58,158 +60,219 @@ export default function WaitingRoom() {
 
 
   return (
+
     <div
       style={{
         height: "100vh",
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "column",
         justifyContent: "space-between",
         alignItems: "center",
-        background: "linear-gradient(135deg, #003366, #004c99)",
+        background: "linear-gradient(135deg, #edf0f3f1, #eaeef1ff)",
+        //background: "linear-gradient(135deg, #8abbecff, #e0e5ebff)",
         color: "white",
         fontFamily: "Arial, sans-serif",
-        padding: "2rem 4rem",
-        gap: "2rem",
+        padding: "5rem 4rem",
       }}
     >
-      {/* 🩺 Paciente actual */}
+      {/* 🔹 Encabezado con logos */}
       <div
         style={{
-          flex: 1,
-          backgroundColor: "rgba(255,255,255,0.1)",
-          borderRadius: "16px",
-          padding: "2rem",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
-          textAlign: "center",
-          minHeight: "60vh",
+          width: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "1rem",
         }}
       >
-        <h1 style={{ fontSize: "3.2rem", marginBottom: "1rem" }}>
-          🩺 Sala de Espera Pre-Consulta
+        {/* Logo TIC */}
+        <div>
+          <img
+            src={logo}
+            alt="Logo TIC"
+            style={{
+              height: "80px",
+              filter: "drop-shadow(0 0 6px rgba(255,255,255,0.5))",
+              opacity: 0.95,
+              borderRadius: "12px",
+            }}
+          />
+        </div>
+
+        {/* Título principal */}
+        <h1
+          style={{
+            fontSize: "2.8rem",
+            textAlign: "center",
+            color: "#004c8bff",
+            textShadow: "0 0 10px rgba(0,0,0,0.3)",
+          }}
+        >
+          🩺 Sala de Espera - Preconsulta
         </h1>
 
-        <AnimatePresence mode="wait">
-          {paciente ? (
-            <motion.div
-              key={paciente.id || paciente.cinro}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              <p style={{ fontSize: "1.5rem", opacity: 0.9 }}>Paciente llamado:</p>
-              <h2
-                style={{
-                  fontSize: "3.2rem",
-                  color: "#00ffcc",
-                  margin: "0.5rem 0",
-                  textTransform: "uppercase",
-                }}
-              >
-                {paciente.nombre} {paciente.apellido}
-              </h2>
-              <h3 style={{ color: "#b3e5fc", marginTop: "0.5rem" }}>
-                CI: {paciente.cinro}
-              </h3>
-            </motion.div>
-          ) : (
-            <motion.p
-              key="espera"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
-              style={{ fontSize: "1.8rem", opacity: 0.8 }}
-            >
-              Esperando próximo paciente...
-            </motion.p>
-          )}
-        </AnimatePresence>
+        {/* Logo HGCO */}
+        <div>
+          <img
+            src={logohgco}
+            alt="Logo HGCO"
+            style={{
+              height: "80px",
+              filter: "drop-shadow(0 0 6px rgba(255,255,255,0.5))",
+              opacity: 0.95,
+              borderRadius: "12px",
+            }}
+          />
+        </div>
       </div>
 
-      {/* ✅ Pacientes atendidos */}
+      {/* 🔹 Contenido principal (paciente actual + atendidos) */}
       <div
         style={{
-          flex: 0.5,
-          backgroundColor: "rgba(255,255,255,0.08)",
-          borderRadius: "16px",
-          padding: "2rem",
-          boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
-          height: "40%",
+          width: "100%",
           display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          overflowY: "auto",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "stretch",
+          gap: "1.5rem",
+          flex: 1,
         }}
       >
-        <h2 style={{ marginBottom: "1rem" }}>✅ Pacientes atendidos hoy</h2>
-        <h3
+        {/* 🩺 Paciente actual */}
+        <div
           style={{
-            fontSize: "2rem",
-            color: "#00ffcc",
-            fontWeight: "bold",
-            marginBottom: "1rem",
+            flex: 1,
+            backgroundColor: "rgba(255,255,255,0.1)",
+            borderRadius: "16px",
+            padding: "1rem",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            background:"#94b7daff"
           }}
         >
-          {atendidosHoy.length}
-        </h3>
-
-        {error && <p style={{ color: "#ff8080" }}>{error}</p>}
-
-        <ul
-          style={{
-            listStyle: "none",
-            padding: 0,
-            width: "80%",
-            maxHeight: "80%",
-          }}
-        >
-          <AnimatePresence>
-            {atendidosHoy.length > 0 ? (
-              atendidosHoy.map((a, index) => (
-                <motion.li
-                  key={a.id || index}
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
+          <AnimatePresence mode="wait">
+            {paciente ? (
+              <motion.div
+                key={paciente.id || paciente.cinro}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                <p style={{ fontSize: "4rem", opacity: 0.9 , color: "#004c8bff" , fontWeight:"bold"}}>
+                  Paciente llamado:
+                </p>
+                <h2
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                    borderRadius: "8px",
-                    padding: "0.8rem 1rem",
-                    marginBottom: "0.6rem",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    fontSize: "5rem",
+                    color: "#004c8bff",
+                    margin: "0.5rem 0",
+                    textTransform: "uppercase",
                   }}
                 >
-                  <span style={{ fontWeight: "bold" }}>
-                    {a.nombre} {a.apellido}
-                  </span>
-                  <span style={{ color: "#b3e5fc", fontSize: "0.9rem" }}>
-                    {new Date(a.fecha_llamado).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
-                </motion.li>
-              ))
+                  {paciente.nombre} {paciente.apellido}
+                </h2>
+                <h3 style={{ color: "#4f8b00ff", marginTop: "0.5rem" , fontSize: "3rem" }}>
+                  CI: {paciente.cinro}
+                </h3>
+              </motion.div>
             ) : (
-              <motion.li
-                key="vacio"
+              <motion.p
+                key="espera"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1 }}
-                style={{ opacity: 0.8 }}
+                style={{ fontSize: "1.8rem", opacity: 0.8 , color:"#004c8bff"}}
               >
-                No hay pacientes atendidos hoy.
-              </motion.li>
+                Esperando próximo paciente...
+              </motion.p>
             )}
           </AnimatePresence>
-        </ul>
+        </div>
 
+        {/* ✅ Pacientes atendidos */}
+        <div
+          style={{
+            flex: 0.5,
+            backgroundColor: "rgba(255,255,255,0.08)",
+            borderRadius: "16px",
+            padding: "2rem",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+            overflowY: "auto",
+            background:"#94b7daff"
+          }}
+        >
+          <h2 style={{ marginBottom: "1rem", textAlign: "center", fontSize:"3rem" }}>
+            ✅ Pacientes atendidos hoy
+          </h2>
+          <h3
+            style={{
+              fontSize: "2rem",
+              color: "#004c8bff",
+              fontWeight: "bold",
+              marginBottom: "1rem",
+              textAlign: "center",
+            }}
+          >
+            {atendidosHoy.length}
+          </h3>
+
+          {error && <p style={{ color: "#ff8080" }}>{error}</p>}
+
+          <ul
+            style={{
+              listStyle: "none",
+              padding: 0,
+              margin: 0,
+            }}
+          >
+            <AnimatePresence>
+              {atendidosHoy.length > 0 ? (
+                atendidosHoy.map((a, index) => (
+                  <motion.li
+                    key={a.id || index}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    style={{
+                      backgroundColor: "rgba(255,255,255,0.1)",
+                      borderRadius: "8px",
+                      padding: "0.8rem 1rem",
+                      marginBottom: "0.6rem",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span style={{ fontWeight: "bold" , color:"#1a1717ad" }}>
+                      {a.nombre} {a.apellido}
+                    </span>
+                    <span style={{ color: "#09425cff", fontSize: "0.9rem" }}>
+                      {new Date(a.fecha_llamado).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </motion.li>
+                ))
+              ) : (
+                <motion.li
+                  key="vacio"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1 }}
+                  style={{ opacity: 0.8, textAlign: "center" }}
+                >
+                  No hay pacientes atendidos hoy.
+                </motion.li>
+              )}
+            </AnimatePresence>
+          </ul>
+        </div>
       </div>
     </div>
   );
