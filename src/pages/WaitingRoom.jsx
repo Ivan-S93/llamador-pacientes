@@ -108,7 +108,7 @@ export default function WaitingRoom() {
             textShadow: "0 0 10px rgba(0,0,0,0.3)",
           }}
         >
-          🩺 Sala de Espera - Preconsulta
+          🩺 Sala de Espera - RAC
         </h1>
 
         {/* Logo HGCO */}
@@ -129,24 +129,27 @@ export default function WaitingRoom() {
       {/* 🔹 Contenido principal (paciente actual + atendidos) */}
       <div
         style={{
-          width: "100%",
+          width: "80%",
+          height: "70vh", 
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "stretch",
           gap: "1.5rem",
-          flex: 1,
+          flex: 1
         }}
       >
         {/* 🩺 Paciente actual */}
         <div
           style={{
             flex: 1,
+            height:"65vh",
             backgroundColor: "rgba(255,255,255,0.1)",
             borderRadius: "16px",
-            padding: "1rem",
+            padding: "0.5rem",
             boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
             textAlign: "center",
+            minHeight: "60vh",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -197,6 +200,7 @@ export default function WaitingRoom() {
         <div
           style={{
             flex: 0.5,
+            height:"60vh",
             backgroundColor: "rgba(255,255,255,0.08)",
             borderRadius: "16px",
             padding: "2rem",
